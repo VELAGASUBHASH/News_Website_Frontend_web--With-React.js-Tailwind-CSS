@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL = "https://amaravati-times.onrender.com/api";
 const TOKEN_KEY = "amaravati_times_token";
 
 const axiosInstance = axios.create({
