@@ -42,7 +42,7 @@ const LatestNewsGrid = ({ articles, loading }) => {
         <Link to={`/article/${lead.slug}`} className="lg:col-span-2 group block">
           <div className="overflow-hidden rounded-sm mb-3 bg-gray-100">
             <img
-              src={lead.coverImage || getPlaceholderImage(lead.title)}
+src={lead.coverImage?.url || getPlaceholderImage(lead.title)}
               onError={handleImgError}
               alt={lead.title}
               className="w-full h-80 object-cover group-hover:scale-105 transition duration-300"
@@ -76,7 +76,7 @@ const LatestNewsGrid = ({ articles, loading }) => {
                 className="flex gap-3 group pt-4 first:pt-0"
               >
                 <img
-                  src={article.coverImage || getPlaceholderImage()}
+src={article.coverImage?.url || getPlaceholderImage()}
                   onError={handleImgError}
                   alt={article.title}
                   className="w-24 h-20 object-cover rounded-sm flex-shrink-0 bg-gray-100"
