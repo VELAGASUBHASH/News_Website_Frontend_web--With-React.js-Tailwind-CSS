@@ -14,7 +14,10 @@ const ImageUploadField = ({ value, onChange }) => {
     setError(null);
     try {
       const data = await uploadImage(file);
-      onChange(data.image?.url ?? "");
+      onChange({
+        url: data.image?.url ?? "",
+        publicId: data.image?.publicId ?? "",
+      });
     } catch (err) {
       setError(err.response?.data?.message || "Image upload failed. Please try again.");
     } finally {
@@ -27,7 +30,7 @@ const ImageUploadField = ({ value, onChange }) => {
       <label className="block text-sm font-medium text-ink mb-1">Cover Image</label>
       <div className="flex items-center gap-4">
         <img
-          src={value || getPlaceholderImage("No image")}
+          src={value?.url || getPlaceholderImage("No image")}
           alt="Cover preview"
           className="w-24 h-16 object-cover rounded-md border border-gray-200 bg-gray-50"
         />
