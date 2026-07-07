@@ -18,7 +18,7 @@ const ArticleCard = ({ article, variant = "default" }) => {
         className="flex gap-4 group border-b border-gray-100 pb-4"
       >
         <img
-          src={article.coverImage || getPlaceholderImage()}
+          src={article.coverImage?.url || getPlaceholderImage()}
           onError={handleImgError}
           alt={article.title}
           className="w-28 h-20 object-cover rounded-sm flex-shrink-0 bg-gray-100"
