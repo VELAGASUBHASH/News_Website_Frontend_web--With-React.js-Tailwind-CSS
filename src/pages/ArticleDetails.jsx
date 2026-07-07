@@ -106,7 +106,7 @@ const ArticleDetails = () => {
         </div>
 
         <img
-          src={article.coverImage || getPlaceholderImage(article.title)}
+src={article.coverImage?.url || getPlaceholderImage(article.title)}
           onError={handleImgError}
           alt={article.title}
           className="w-full h-96 object-cover rounded-sm my-8 bg-gray-100"
