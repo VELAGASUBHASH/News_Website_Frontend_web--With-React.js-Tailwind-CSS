@@ -44,7 +44,7 @@ const FeaturedCarousel = ({ articles, loading }) => {
       <Link to={`/article/${active.slug}`} className="group block">
         <div className="relative overflow-hidden rounded-sm">
           <img
-            src={active.coverImage || getPlaceholderImage(active.title)}
+src={active.coverImage?.url || getPlaceholderImage(active.title)}
             onError={handleImgError}
             alt={active.title}
             className="w-full h-96 object-cover"
