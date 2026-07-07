@@ -8,16 +8,16 @@ import { useCategories } from "../hooks/useCategories";
 const ArticleFormModal = ({ initialData, onSave, onClose }) => {
   const { categories } = useCategories();
   const [form, setForm] = useState({
-    title: initialData?.title || "",
-    summary: initialData?.summary || "",
-    content: initialData?.content || "",
-    category: initialData?.category?._id || initialData?.category || "",
-    coverImage: initialData?.coverImage || "",
-    tags: (initialData?.tags || []).join(", "),
-    isFeatured: initialData?.isFeatured || false,
-    isBreaking: initialData?.isBreaking || false,
-    status: initialData?.status || "PUBLISHED",
-  });
+  title: initialData?.title || "",
+  summary: initialData?.summary || "",
+  content: initialData?.content || "",
+  category: initialData?.category?._id || initialData?.category || "",
+  coverImage: initialData?.coverImage || { url: "", publicId: "" },
+  tags: (initialData?.tags || []).join(", "),
+  isFeatured: initialData?.isFeatured || false,
+  isBreaking: initialData?.isBreaking || false,
+  status: initialData?.status || "PUBLISHED",
+});
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -93,9 +93,9 @@ const ArticleFormModal = ({ initialData, onSave, onClose }) => {
         />
 
         <ImageUploadField
-          value={form.coverImage}
-          onChange={(url) => setForm({ ...form, coverImage: url })}
-        />
+  value={form.coverImage}
+  onChange={(coverImageObj) => setForm({ ...form, coverImage: coverImageObj })}
+/>
 
         <div className="flex items-center gap-6 mb-4">
           <label className="flex items-center gap-2 text-sm">
