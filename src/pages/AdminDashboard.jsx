@@ -21,7 +21,31 @@ import {
   getTopAuthors,
 } from "../services/dashboardService";
 
-const normalizeChartData = (data) => data.data ?? data.items ?? (Array.isArray(data) ? data : []);
+const MONTH_NAMES = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+// Backend returns [{ _id: { month: 7 }, users: 3 }] — map to chart-friendly { month: "Jul", count: 3 }
+const normalizeMonthlyData = (rawData, valueKey) =>
+  (Array.isArray(rawData) ? rawData : []).map((item) => ({
+    month: MONTH_NAMES[(item._id?.month ?? 1) - 1] ?? "?",
+    count: item[valueKey] ?? 0,
+  }));
+
+// Backend returns [{ _id, totalArticles, category: [{ name }] }] — flatten to { name, count }
+const normalizeTopCategories = (rawData) =>
+  (Array.isArray(rawData) ? rawData : []).map((item) => ({
+    name: item.category?.[0]?.name ?? "Unknown",
+    count: item.totalArticles ?? 0,
+  }));
+
+// Backend returns [{ _id, articles, author: [{ fullName }] }] — flatten to { name, count }
+const normalizeTopAuthors = (rawData) =>
+  (Array.isArray(rawData) ? rawData : []).map((item) => ({
+    name: item.author?.[0]?.fullName ?? "Unknown",
+    count: item.articles ?? 0,
+  }));
 
 const AdminDashboard = () => {
   const [overview, setOverview] = useState(null);
@@ -48,11 +72,11 @@ const AdminDashboard = () => {
           ]);
 
         if (!isMounted) return;
-        setOverview(overviewData.stats ?? overviewData);
-        setMonthlyUsers(normalizeChartData(usersData));
-        setMonthlyArticles(normalizeChartData(articlesData));
-        setTopCategories(normalizeChartData(categoriesData));
-        setTopAuthors(normalizeChartData(authorsData));
+        setOverview(overviewData.statistics ?? {});
+        setMonthlyUsers(normalizeMonthlyData(usersData, "users"));
+        setMonthlyArticles(normalizeMonthlyData(articlesData, "articles"));
+        setTopCategories(normalizeTopCategories(categoriesData));
+        setTopAuthors(normalizeTopAuthors(authorsData));
       } catch (err) {
         if (!isMounted) return;
         setError("Could not load dashboard data.");
@@ -80,6 +104,13 @@ const AdminDashboard = () => {
         <StatCard label="Total Comments" value={overview?.totalComments ?? "—"} />
       </div>
 
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <StatCard label="Published" value={overview?.publishedArticles ?? "—"} />
+        <StatCard label="Drafts" value={overview?.draftArticles ?? "—"} />
+        <StatCard label="Total Likes" value={overview?.totalLikes ?? "—"} />
+        <StatCard label="Total Bookmarks" value={overview?.totalBookmarks ?? "—"} />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
         <div className="border border-gray-200 rounded-md p-5">
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
@@ -89,7 +120,7 @@ const AdminDashboard = () => {
             <LineChart data={monthlyUsers}>
               <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
               <XAxis dataKey="month" fontSize={12} />
-              <YAxis fontSize={12} />
+              <YAxis fontSize={12} allowDecimals={false} />
               <Tooltip />
               <Line type="monotone" dataKey="count" stroke="#C8102E" strokeWidth={2} dot={false} />
             </LineChart>
@@ -104,7 +135,7 @@ const AdminDashboard = () => {
             <BarChart data={monthlyArticles}>
               <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
               <XAxis dataKey="month" fontSize={12} />
-              <YAxis fontSize={12} />
+              <YAxis fontSize={12} allowDecimals={false} />
               <Tooltip />
               <Bar dataKey="count" fill="#111111" radius={[4, 4, 0, 0]} />
             </BarChart>
